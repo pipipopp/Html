@@ -1,16 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HIOA</title>
 </head>
 <body>
-    <h1>
-        GG
-    </h1>
-    <h2>
-        WP
-    </h2>
+    <canvas id="canvas" width="1920" height="1000"></canvas>
+    <script>
+        let canvas = document.getElementById("canvas");
+        let ctx = canvas.getContext("2d");
+        let spheres = []; // Зберігатиме сфери
+
+        function generateRandomColor() {
+            // Функція генерує випадковий колір
+            let letters = "0123456789ABCDEF";
+            let color = "#";
+            for (let i = 0; i < 6; i++) {
+              color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        function onCanvasClick(e) {
+            // Зберігати координати кліку
+            let x = e.clientX;
+            let y = e.clientY;
+
+            // Створити нову сферу
+            let sphere = {
+              x: x,
+              y: y,
+              color: generateRandomColor(),
+              radius: Math.random() * 50 + 10, // Випадковий розмір
+              vx: Math.random() * 4 - 2, // Випадкова швидкість по X
+              vy: Math.random() * 4 - 2, // Випадкова швидкість по Y
+            };
+
+            spheres.push(sphere); // Додати сферу до масиву
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let sphere of spheres) {
+              // Оновити координати
+              sphere.x += sphere.vx;
+              sphere.y += sphere.vy;
+
+              // Перевірити межі
+              if (sphere.x < 0 || sphere.x > canvas.width) {
+                sphere.vx = -sphere.vx;
+              }
+              if (sphere.y < 0 || sphere.y > canvas.height) {
+                sphere.vy = -sphere.vy;
+              }
+
+              // Малювати сферу
+              ctx.fillStyle = sphere.color;
+              ctx.beginPath();
+              ctx.arc(sphere.x, sphere.y, sphere.radius, 0, Math.PI * 2);
+              ctx.fill();
+            }
+        }
+
+        window.addEventListener("click", onCanvasClick);
+        animate();
+    </script>
 </body>
 </html>
